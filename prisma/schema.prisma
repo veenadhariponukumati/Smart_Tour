@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id    Int    @id @default(autoincrement())
+  name  String
+  address String
+  units Unit[]
+}
+
+model Unit {
+  id          Int    @id @default(autoincrement())
+  unitNumber  String
+  propertyId  Int
+  property    Property @relation(fields: [propertyId], references: [id])
+  tourSlots   TourSlot[]
+  tours       Tour[]
+}
+
+model TourSlot {
+  id          Int      @id @default(autoincrement())
+  unitId      Int
+  unit        Unit     @relation(fields: [unitId], references: [id])
+  startTime   DateTime
+  endTime     DateTime
+  isAvailable Boolean  @default(true)
+  tour        Tour?
+}
+
+model Lead {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  fullName    String
+  phoneNumber String
+  idVerified  Boolean  @default(false)
+  idImageUrl  String?
+  tours       Tour[]
+}
+
+enum TourStatus {
+  PENDING_VERIFICATION
+  APPROVED
+  REJECTED
+}
+
+model Tour {
+  id           Int        @id @default(autoincrement())
+  scheduledAt  DateTime
+  status       TourStatus @default(PENDING_VERIFICATION)
+  unitId       Int
+  unit         Unit       @relation(fields: [unitId], references: [id])
+  tourSlotId   Int        @unique
+  tourSlot     TourSlot   @relation(fields: [tourSlotId], references: [id])
+  leadId       Int
+  lead         Lead       @relation(fields: [leadId], references: [id])
+  accessCode   String?
+  publicToken  String     @unique @default(uuid())
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
