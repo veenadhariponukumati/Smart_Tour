@@ -2,7 +2,9 @@
 
 Self-guided apartment tour booking platform. Prospects book a tour slot, a property manager approves it, and an access code is issued for smart-lock entry — no agent coordination required.
 
-Built as a portfolio project targeting a Junior Full-Stack Developer role at a PropTech company.
+Demonstrates the booking → approval → credential-issuance workflow common to
+self-service scheduling products: concurrency-safe slot claiming, role-gated
+approval, and tokenized confirmation links.
 
 ---
 
